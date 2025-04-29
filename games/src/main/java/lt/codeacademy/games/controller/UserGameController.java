@@ -30,16 +30,16 @@ public class UserGameController {
         return ResponseEntity.ok(userGameService.getAllUserGames());
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUserGame(@PathVariable Long id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteUserGame(@RequestParam Long id) {
         userGameService.deleteUserGame(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/update")
     public ResponseEntity<UserGame> updateUserGame(
-            @PathVariable Long id,
-            @RequestBody UpdateUserGameRequest request) {
+            @RequestParam Long id,
+            @RequestBody @Valid UpdateUserGameRequest request) {
 
         UserGame updatedUserGame = userGameService.updateUserGame(id, request);
         return ResponseEntity.ok(updatedUserGame);

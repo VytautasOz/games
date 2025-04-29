@@ -1,6 +1,7 @@
 package lt.codeacademy.games.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lt.codeacademy.games.converter.UserGameConverter;
 import lt.codeacademy.games.dto.CreateUserGameRequest;
 import lt.codeacademy.games.dto.UpdateUserGameRequest;
@@ -8,6 +9,7 @@ import lt.codeacademy.games.dto.UserGameResponse;
 import lt.codeacademy.games.entity.Game;
 import lt.codeacademy.games.entity.User;
 import lt.codeacademy.games.entity.UserGame;
+import lt.codeacademy.games.exception.DuplicateUserGameException;
 import lt.codeacademy.games.repository.GameRepository;
 import lt.codeacademy.games.repository.UserGameRepository;
 import lt.codeacademy.games.repository.UserRepository;
@@ -17,17 +19,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserGameService {
 
     private final UserGameRepository userGameRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
-
-    public UserGameService(UserGameRepository userGameRepository, UserRepository userRepository, GameRepository gameRepository) {
-        this.userGameRepository = userGameRepository;
-        this.userRepository = userRepository;
-        this.gameRepository = gameRepository;
-    }
 
     public UserGame createUserGame(CreateUserGameRequest request) {
 
@@ -38,8 +35,11 @@ public class UserGameService {
         gameRepository.findById(request.videoGameId())
                 .orElseThrow(() -> new EntityNotFoundException("Game not found with ID: " + request.videoGameId()));
 
+        boolean exists = userGameRepository.existsByUserIdAndVideoGameId(request.userId(), request.videoGameId());
+        if (exists) {
+            throw new DuplicateUserGameException("User has already added this game.");
+        }
         UserGame userGame = UserGameConverter.toEntity(request);
-
         return userGameRepository.save(userGame);
     }
 

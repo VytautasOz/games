@@ -1,6 +1,7 @@
 package lt.codeacademy.games.service;
 
 import com.opencsv.CSVReader;
+import lombok.RequiredArgsConstructor;
 import lt.codeacademy.games.converter.GameConverter;
 import lt.codeacademy.games.dto.GameResponse;
 import lt.codeacademy.games.entity.Game;
@@ -17,14 +18,10 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
 
     private final GameRepository gameRepository;
-
-
-    public GameService(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
-    }
 
     public void loadCsv(String path) {
         try (CSVReader reader = new CSVReader(new FileReader(path))) {
