@@ -24,7 +24,7 @@ public class UserController {
         return ResponseEntity.ok("User created successfully");
     }
 
-    @PatchMapping("/patch")
+    @PatchMapping("/update")
     public ResponseEntity<UserResponse> patchUser(@RequestParam Long id, @RequestBody @Valid UpdateUserRequest request) {
         UserResponse updatedUser = userService.patchUser(id, request);
         return ResponseEntity.ok(updatedUser);
